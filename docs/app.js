@@ -33,6 +33,7 @@ async function init() {
   $("#nAll").textContent = stats.markets.toLocaleString("en-GB");
   const map = (S.map = new maplibregl.Map({ container: "map", style: reink(style), center: [12, 50.5], zoom: 4.1, minZoom: 2.5, maxZoom: 17, attributionControl: false }));
   map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "Markets © OpenStreetMap contributors" }), "bottom-right");
+  if (innerWidth > 700) map.setPadding({ left: 400, top: 0, right: 0, bottom: 0 });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
   const setup = () => {
     if (map.getLayer("m-open")) return true;
