@@ -9,18 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
 <style>
-:root { --pine: #0d241b; --pine2: #133326; --red: #d4213d; --gold: #f5c451; --snow: #f6f1e7; --mist: #b9c7bd; --dim: #6f8578; }
+:root { --pine: #142b24; --pine2: #18342b; --red: #c4495a; --gold: #e9c77b; --snow: #efe9dc; --mist: #b9c7bd; --dim: #6f8578; }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--pine); color: var(--snow); font-family: Inter, system-ui, sans-serif; }
 #map { position: absolute; inset: 0; }
-.panel { position: absolute; z-index: 2; left: 18px; top: 18px; width: 380px; max-width: calc(100% - 36px); background: rgba(13,36,27,.92);
+.panel { position: absolute; z-index: 2; left: 18px; top: 18px; width: 380px; max-width: calc(100% - 36px); background: rgba(20,43,36,.9);
   border: 1px solid rgba(245,196,81,.35); border-radius: 14px; padding: 18px 20px 16px; backdrop-filter: blur(6px); box-shadow: 0 18px 40px -18px #000; }
 .eb { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
 h1 { font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: 38px; line-height: 1; margin: 8px 0 6px; }
 h1 span { color: var(--red); }
 .sub { margin: 0 0 12px; color: var(--mist); font-size: 13.5px; line-height: 1.45; }
 .load { height: 16px; border-radius: 8px; background: #0a1c15; border: 1px solid rgba(246,241,231,.25); overflow: hidden; position: relative; }
-.load b { position: absolute; inset: 0 auto 0 0; width: 0; background: repeating-linear-gradient(-45deg, var(--red) 0 10px, var(--snow) 10px 20px); transition: width .25s; }
+.load b { position: absolute; inset: 0 auto 0 0; width: 0; background: repeating-linear-gradient(-45deg, var(--red) 0 10px, #e8d9cf 10px 20px); transition: width .25s; }
 .loadtxt { display: flex; justify-content: space-between; font-size: 12.5px; margin-top: 6px; color: var(--mist); }
 .loadtxt strong { color: var(--snow); font-size: 15px; }
 .date { font-family: Fraunces, Georgia, serif; font-size: 26px; font-weight: 600; margin: 12px 0 4px; color: var(--gold); }
@@ -54,10 +54,10 @@ h1 span { color: var(--red); }
   <div class="ctrl"><button id="play" aria-label="Play">▶</button><input id="day" type="range" min="0" max="70" value="5" aria-label="Day of the season"></div>
   <canvas id="hist" aria-label="Markets open per day"></canvas>
   <div class="legend">
-    <span><i style="background:#f5c451"></i>dated for 2026 in OSM</span>
-    <span><i style="background:#f5c451;opacity:.7"></i>yearly date (no year)</span>
-    <span><i style="background:#d4213d"></i>estimated from an earlier year</span>
-    <span><i style="background:#f6f1e7;opacity:.5"></i>no date in OSM</span>
+    <span><i style="background:#e9c77b"></i>dated for 2026 in OSM</span>
+    <span><i style="background:#e9c77b;opacity:.7"></i>yearly date (no year)</span>
+    <span><i style="background:#c4495a"></i>estimated from an earlier year</span>
+    <span><i style="background:#efe9dc;opacity:.5"></i>no date in OSM</span>
   </div>
   <p class="note">Dates come from the OSM tag <code>xmas:day_date</code>. Most were tagged for an earlier year; those markets are shown on the
     same calendar days in 2026 as an estimate. Nothing here is checked against the organisers, so confirm before you travel. OSM does not
@@ -66,6 +66,6 @@ h1 span { color: var(--red); }
     <a href="https://barisparlatangiller.github.io/" target="_blank" rel="noopener">all maps</a> · Barış Parlatangiller, built with Claude</p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

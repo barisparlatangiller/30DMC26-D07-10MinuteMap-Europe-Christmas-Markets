@@ -9,15 +9,15 @@ const S = { i: 5, play: null, feats: [], dated: [] };
 function reink(st) {
   for (const l of st.layers) {
     const id = l.id, p = (l.paint = l.paint || {});
-    if (l.type === "background") p["background-color"] = "#133326";
-    else if (l.type === "fill") { p["fill-color"] = /water/.test(id) ? "#0a1d16" : /building/.test(id) ? "#173a2c" : /park|landcover|wood|grass/.test(id) ? "#163a2b" : "#133326"; delete p["fill-pattern"]; }
+    if (l.type === "background") p["background-color"] = "#18342b";
+    else if (l.type === "fill") { p["fill-color"] = /water/.test(id) ? "#10251e" : /building/.test(id) ? "#1b3a30" : /park|landcover|wood|grass/.test(id) ? "#1a3a2f" : "#18342b"; delete p["fill-pattern"]; }
     else if (l.type === "line") {
-      if (/boundary_country|boundary_2|country/.test(id)) { p["line-color"] = "#d4213d"; p["line-width"] = ["interpolate", ["linear"], ["zoom"], 3, 1, 8, 2.2]; p["line-opacity"] = 0.85; }
-      else if (/boundary/.test(id)) { p["line-color"] = "#c99a3a"; p["line-opacity"] = 0.45; }
-      else if (/water/.test(id)) p["line-color"] = "#0a1d16";
-      else p["line-color"] = "#1c4635";
+      if (/boundary_country|boundary_2|country/.test(id)) { p["line-color"] = "#c4495a"; p["line-width"] = ["interpolate", ["linear"], ["zoom"], 3, 1, 8, 2.2]; p["line-opacity"] = 0.85; }
+      else if (/boundary/.test(id)) { p["line-color"] = "#b99a5e"; p["line-opacity"] = 0.45; }
+      else if (/water/.test(id)) p["line-color"] = "#10251e";
+      else p["line-color"] = "#23463a";
     } else if (l.type === "symbol") {
-      p["text-color"] = /place_country|country/.test(id) ? "#f5c451" : /place_(city|capital)|city/.test(id) ? "#f6f1e7" : /water/.test(id) ? "#5f8a77" : "#a9bcb0";
+      p["text-color"] = /place_country|country/.test(id) ? "#e9c77b" : /place_(city|capital)|city/.test(id) ? "#efe9dc" : /water/.test(id) ? "#5f8a77" : "#a9bcb0";
       p["text-halo-color"] = "#0d241b"; p["text-halo-width"] = 1.4;
       if (/poi|housenumber/.test(id)) l.layout = { ...(l.layout || {}), visibility: "none" };
     }
@@ -35,27 +35,30 @@ async function init() {
   map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "Markets © OpenStreetMap contributors" }), "bottom-right");
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
   const setup = () => {
-    if (map.getSource("m")) return;
-    map.addSource("m", { type: "geojson", data: fc });
+    if (map.getLayer("m-open")) return true;
+    try {
+    if (!map.getSource("m")) map.addSource("m", { type: "geojson", data: fc });
     const open = ["all", ["has", "o"], ["<=", ["get", "o"], ["literal", iso(S.i)]], [">=", ["get", "c"], ["literal", iso(S.i)]]];
-    map.addLayer({ id: "m-dim", type: "circle", source: "m", paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 1.6, 10, 5], "circle-color": ["match", ["get", "s"], "unknown", "#f6f1e7", "past", "#d4213d", "#f5c451"],
+    if (!map.getLayer("m-dim")) map.addLayer({ id: "m-dim", type: "circle", source: "m", paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 1.6, 10, 5], "circle-color": ["match", ["get", "s"], "unknown", "#efe9dc", "past", "#c4495a", "#e9c77b"],
       "circle-opacity": ["match", ["get", "s"], "unknown", 0.28, 0.45] } });
-    map.addLayer({ id: "m-glow", type: "circle", source: "m", filter: open, paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 9, 10, 26], "circle-color": ["match", ["get", "s"], "past", "#d4213d", "#f5c451"],
-      "circle-opacity": 0.22, "circle-blur": 1 } });
+    if (!map.getLayer("m-glow")) map.addLayer({ id: "m-glow", type: "circle", source: "m", filter: open, paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 9, 10, 26], "circle-color": ["match", ["get", "s"], "past", "#c4495a", "#e9c77b"],
+      "circle-opacity": 0.16, "circle-blur": 1 } });
     map.addLayer({ id: "m-open", type: "circle", source: "m", filter: open, paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 3.4, 10, 9], "circle-color": ["match", ["get", "s"], "past", "#d4213d", "#f5c451"],
-      "circle-opacity": ["match", ["get", "s"], "recurring", 0.8, 1], "circle-stroke-color": "#f6f1e7", "circle-stroke-width": ["match", ["get", "s"], "2026", 1.4, 0.6] } });
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 3.4, 10, 9], "circle-color": ["match", ["get", "s"], "past", "#c4495a", "#e9c77b"],
+      "circle-opacity": ["match", ["get", "s"], "recurring", 0.8, 1], "circle-stroke-color": "#efe9dc", "circle-stroke-width": ["match", ["get", "s"], "2026", 1.4, 0.6] } });
     S.open = open; render();
     for (const id of ["m-open", "m-dim"]) {
       map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
       map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
       map.on("click", id, e => popup(e.features[0], e.lngLat));
     }
+    return true;
+    } catch (e) { console.warn("setup retry", e.message); return false; }
   };
   map.on("load", setup);
-  const poll = setInterval(() => { if (map.style && map.style._loaded) { setup(); clearInterval(poll); } }, 200);
+  const poll = setInterval(() => { if (map.style && map.style._loaded && setup()) clearInterval(poll); }, 250);
 
   const today = Math.round((Date.UTC(2026, 10, 6) - START) / 864e5);
   S.i = today; $("#day").value = today; $("#day").max = DAYS - 1;
@@ -91,7 +94,7 @@ function drawHist() {
   g.clearRect(0, 0, cv.width, cv.height);
   vals.forEach((v, k) => {
     const h = (cv.height - 12 * dpr) * v / mx;
-    g.fillStyle = k === S.i ? "#f5c451" : k < S.i ? "rgba(212,33,61,.85)" : "rgba(246,241,231,.22)";
+    g.fillStyle = k === S.i ? "#e9c77b" : k < S.i ? "rgba(196,73,90,.75)" : "rgba(246,241,231,.22)";
     g.fillRect(k * w + 0.5, cv.height - 12 * dpr - h, Math.max(1, w - 1), h);
   });
   g.fillStyle = "#b9c7bd"; g.font = `${9.5 * dpr}px Inter`; g.textBaseline = "bottom";
