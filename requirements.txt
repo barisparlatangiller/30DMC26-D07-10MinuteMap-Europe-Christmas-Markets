@@ -2,3 +2,4 @@ geopandas>=0.14
 pyogrio>=0.7
 shapely>=2.0
 numpy
+requests

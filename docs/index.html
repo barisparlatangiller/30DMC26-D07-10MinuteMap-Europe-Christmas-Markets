@@ -30,6 +30,17 @@ h1 span { color: var(--red); }
 #hist { display: block; width: 100%; height: 54px; margin-top: 8px; }
 .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 12px; margin-top: 10px; font-size: 12px; color: var(--mist); }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.today { margin-top: 10px; font-size: 12.5px; }
+.today summary { cursor: pointer; color: var(--gold); font-weight: 600; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+#list { list-style: none; margin: 6px 0 0; padding: 0; max-height: 150px; overflow-y: auto; }
+#list li { display: flex; gap: 8px; align-items: baseline; padding: 4px 2px; border-top: 1px solid rgba(239,233,220,.08); cursor: pointer; }
+#list li:hover { background: rgba(239,233,220,.06); }
+#list li span { flex: 1; } #list li small { color: var(--dim); }
+#list li.more { color: var(--dim); cursor: default; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: #e9c77b; }
+.dot.verified { background: #ffe4a3; box-shadow: 0 0 0 1.5px #efe9dc; } .dot.past { background: #c4495a; }
+.topc { font-size: 11.5px; color: var(--mist); margin: 8px 0 0; }
+.pp .w { font-size: 12px; color: #555; margin-bottom: 4px; }
 .note { font-size: 11.5px; color: var(--dim); line-height: 1.45; margin: 10px 0 0; }
 .note a { color: var(--mist); }
 .maplibregl-popup-content { background: #fbf7ee; color: #1d1d1d; border-radius: 10px; padding: 12px 14px; font-family: Inter; font-size: 13px; max-width: 300px; }
@@ -39,7 +50,9 @@ h1 span { color: var(--red); }
 .pp .s { font-size: 11.5px; color: #555; margin-top: 4px; }
 .pp a { color: #0d6b45; }
 .maplibregl-ctrl-attrib { background: rgba(13,36,27,.8) !important; color: var(--mist); } .maplibregl-ctrl-attrib a { color: var(--mist); }
-@media (max-width: 700px) { .panel { top: auto; bottom: 10px; left: 10px; padding: 12px 14px; } h1 { font-size: 26px; } .sub, .legend { display: none; } #hist { height: 36px; } }
+.panel { max-height: calc(100% - 36px); overflow-y: auto; }
+@media (max-width: 700px) { .panel { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; padding: 12px 14px; max-height: 46%; }
+  h1 { font-size: 24px; margin: 4px 0; } .sub, .legend, .note, .topc, .eb { display: none; } #hist { height: 34px; } .date { font-size: 19px; margin: 6px 0 2px; } #list { max-height: 90px; } }
 </style>
 </head>
 <body>
@@ -53,19 +66,23 @@ h1 span { color: var(--red); }
   <div class="date" id="dlabel"></div>
   <div class="ctrl"><button id="play" aria-label="Play">▶</button><input id="day" type="range" min="0" max="70" value="5" aria-label="Day of the season"></div>
   <canvas id="hist" aria-label="Markets open per day"></canvas>
+  <details class="today" open><summary>Open on this day</summary><ol id="list"></ol></details>
   <div class="legend">
+    <span><i style="background:#ffe4a3;box-shadow:0 0 0 2px #efe9dc"></i>2026 dates checked (<b id="nVer"></b>)</span>
     <span><i style="background:#e9c77b"></i>dated for 2026 in OSM</span>
     <span><i style="background:#e9c77b;opacity:.7"></i>yearly date (no year)</span>
-    <span><i style="background:#c4495a"></i>estimated from an earlier year</span>
+    <span><i style="background:#c4495a"></i>estimate from an earlier year</span>
     <span><i style="background:#efe9dc;opacity:.5"></i>no date in OSM</span>
   </div>
-  <p class="note">Dates come from the OSM tag <code>xmas:day_date</code>. Most were tagged for an earlier year; those markets are shown on the
-    same calendar days in 2026 as an estimate. Nothing here is checked against the organisers, so confirm before you travel. OSM does not
+  <p class="topc">Most markets: <span id="topc"></span></p>
+  <p class="note">Dates come from the OSM tag <code>xmas:day_date</code>. Seven large markets were checked against the organiser or city
+    (marked in light gold, source linked). Most other markets only have dates from an earlier year; they are shown on the same weekday in 2026,
+    as an estimate. Confirm before you travel. OSM does not
     list every market in Europe. Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL), export 6 Nov 2026 ·
     <a href="https://github.com/barisparlatangiller/30DMC26-D07-10MinuteMap-Europe-Christmas-Markets" target="_blank" rel="noopener">code</a> ·
     <a href="https://barisparlatangiller.github.io/" target="_blank" rel="noopener">all maps</a> · Barış Parlatangiller, built with Claude</p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
